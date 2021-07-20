@@ -168,7 +168,19 @@ sdc         8:32   0    2G  0 disk
 sdd         8:48   0    2G  0 disk /run/kata-containers/shared/sandboxes/e96d0ce2249e9027f0e1102e66a0c0013473ac48a08824092150f3154ce050a6/shared/839162f25b7907bf91ecb027305e64dd5ccf36f55b15b600e
 ```
 
-如前文说，所有数据都要经过 virtio-fs，不管是镜像数据还是网络存储卷。虚拟机要和宿主机数据交互，就必须要穿过 qemu，virtio-fs 就是穿透 qemu 的桥梁，提供共享文件机制。
+如前文说，所有数据都要经过 virtio-fs，不管是镜像数据还是网络存储卷。虚拟机要和宿主机数据交互，就必须要穿过 qemu，virtio-fs 就是穿透 qemu 的桥梁，提供共享文件机制。数据相关的操作是在宿主机上，比如镜像层的合并，仍然是通过 containerd 的 snapshotter 插件完成的，底层仍然是使用了 overlayfs 文件系统。在 containerd 的配置文件中，有如下设置：
+
+```toml
+[plugins."io.containerd.grpc.v1.cri".containerd]
+    snapshotter = "overlayfs"
+    default_runtime_name = "runc"
+    no_pivot = false
+    disable_snapshot_annotations = true
+    discard_unpacked_layers = false
+
+[plugins."io.containerd.service.v1.diff-service"]
+  default = ["walking"]
+```
 
 ## 6. virtiofsd cache
 
