@@ -1,3 +1,5 @@
+# Kata Containers 与 virtio-fs 技术分析与测试
+
 ## 1. 前言
 
 当前云原生技术发展的如火如荼，容器化技术以及 Kubernetes 容器化应用管理平台，带来了全新的生态系统。随着容器技术的发展，容器运行时规范 OCI 也逐渐脱离 Docker 被单独提了出来，Kubernetes 长期使用的容器运行时是 runC，具有轻量、性能高等优点，但因为共用 Linux 内核以及 namespace 机制隔离的不彻底，存在一定的安全问题，业界涌现了好几个安全容器的解决方案，比如 Google 的 gVisor, Amazon 的 Firecracker，Vmware 的 CRX 等，开源世界里面比较有名的解决方案是 Kata Containers，本文主要就关注在安全容器 Kata Containers 的一些特性和体验。 
